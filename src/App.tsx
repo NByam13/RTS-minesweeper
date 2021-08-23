@@ -1,5 +1,5 @@
-import React from 'react';
-import GameBoard from './components/GameBoard'
+import React from "react";
+import GameBoard from "./components/Gameboard";
 
 function App() {
   return (
