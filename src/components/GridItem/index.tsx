@@ -1,10 +1,12 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { getDefaultLibFileName } from "typescript";
 import {
   SOLID_STATE,
   EMPTY_STATE,
   NUMBER_STATE,
   MINE_STATE,
+  CellType,
 } from "../Gameboard";
 
 const StyledSquare = styled.button`
@@ -12,10 +14,18 @@ const StyledSquare = styled.button`
   height: 20px;
   background-color: gray;
 `;
-type GridItemProps = { onSelect: any; state: string };
+type GridItemProps = { onSelect: any; state: CellType };
 
 const GridItem = ({ onSelect, state }: GridItemProps) => {
-  const display = state === NUMBER_STATE ? "1" : "";
+  let display;
+
+  if (state.visibility === "covered") {
+    display = "";
+  } else if (state.value === NUMBER_STATE) {
+    display = state.tacos;
+  } else if (state.value === MINE_STATE) {
+    display = "B";
+  }
 
   return (
     <StyledSquare data-testid="gridItem" onClick={onSelect}>

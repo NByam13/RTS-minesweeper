@@ -27,27 +27,48 @@ export const EMPTY_STATE = "empty";
 export const NUMBER_STATE = "number";
 export const MINE_STATE = "mine";
 
+export type CellType = {
+  visibility: "covered" | "uncovered";
+  value: typeof NUMBER_STATE | typeof MINE_STATE;
+  tacos: 1 | 2 | 3;
+};
+
 const GameBoard = () => {
-  const [squaresState, setSquaresState] = useState(Array(81).fill(SOLID_STATE));
+  const [squaresState, setSquaresState] = useState<CellType[]>(
+    Array.from({ length: 81 }, () => ({
+      visibility: "covered",
+      value: "number",
+      tacos: 2,
+    }))
+  );
 
   const onSquareClick = (index: number) => {
     const COPY = [...squaresState];
-    COPY[index] = NUMBER_STATE;
-    console.log("being clicked", index);
+    COPY[index].visibility = "uncovered";
+    COPY[index].value =
+      COPY[index].value === MINE_STATE ? MINE_STATE : NUMBER_STATE;
     setSquaresState(COPY);
   };
 
   const assignMines = () => {
     const mines: number[] = [];
 
-    while (mines.length < 11) {
-      let num = Math.random() * 80;
+    while (mines.length < 10) {
+      let num = Math.floor(Math.random() * 80);
       if (!mines.includes(num)) {
         mines.push(num);
       }
     }
-    console.log(mines);
+    const COPY = [...squaresState];
+    mines.forEach((val) => {
+      COPY[val].value = MINE_STATE;
+    });
+    setSquaresState(COPY);
   };
+
+  useEffect(() => {
+    assignMines();
+  }, []);
 
   return (
     <GameBoardGrid data-testid="gameBoard">
