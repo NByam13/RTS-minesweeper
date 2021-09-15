@@ -21,6 +21,8 @@ const GameBoardGrid = styled.div`
     ". . . . . . . . .";
 `;
 
+// write tests for next session
+
 // squares
 export const SOLID_STATE = "solid";
 export const EMPTY_STATE = "empty";
@@ -66,8 +68,87 @@ const GameBoard = () => {
     setSquaresState(COPY);
   };
 
+  const calculateTacosForSquare = (index: number) => {
+    const touchingCells: number[] = [];
+
+    if (index < 9) {
+      if (index === 0) {
+        touchingCells.push(1, 9, 10);
+      } else if (index === 8) {
+        touchingCells.push(7, 16, 17);
+      } else {
+        touchingCells.push(
+          index - 1,
+          index + 1,
+          index + 9,
+          index + 8,
+          index + 10
+        );
+      }
+    } else if (index < 81 && index >= 72) {
+      if (index === 72) {
+        touchingCells.push(index - 9, index - 8, index + 1);
+      } else if (index === 80) {
+        touchingCells.push(index - 1, index - 9, index - 10);
+      } else {
+        touchingCells.push(
+          index + 1,
+          index - 1,
+          index - 9,
+          index - 8,
+          index - 10
+        );
+      }
+    } else {
+      if (index % 9 === 0) {
+        touchingCells.push(
+          index - 9,
+          index - 8,
+          index + 1,
+          index + 9,
+          index + 10
+        );
+      } else if (index % 9 === 8) {
+        touchingCells.push(
+          index - 1,
+          index - 9,
+          index - 10,
+          index + 8,
+          index + 9
+        );
+      } else {
+        touchingCells.push(
+          index - 1,
+          index - 8,
+          index - 9,
+          index - 10,
+          index + 1,
+          index + 8,
+          index + 9,
+          index + 10
+        );
+      }
+    }
+
+    return touchingCells.filter((cellNumber) => {
+      return squaresState[cellNumber].value === MINE_STATE;
+    }).length;
+  };
+
+  const assignTacos = () => {
+    const newState = squaresState.map((square, index) => {
+      return {
+        ...square,
+        tacos: calculateTacosForSquare(index),
+      } as CellType;
+    });
+
+    setSquaresState(newState);
+  };
+
   useEffect(() => {
     assignMines();
+    assignTacos();
   }, []);
 
   return (
