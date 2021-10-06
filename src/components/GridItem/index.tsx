@@ -9,10 +9,10 @@ import {
   CellType,
 } from "../Gameboard";
 
-const StyledSquare = styled.button`
+const StyledSquare = styled.button<{isCovered: boolean}>`
   width: 20px;
   height: 20px;
-  background-color: gray;
+  background-color: ${props=> props.isCovered ? 'gray': 'darkgray'}
 `;
 type GridItemProps = { onSelect: any; state: CellType };
 
@@ -28,7 +28,12 @@ const GridItem = ({ onSelect, state }: GridItemProps) => {
   }
 
   return (
-    <StyledSquare data-testid="gridItem" onClick={onSelect}>
+    <StyledSquare
+      data-number-of-mines-around={state.tacos}
+      data-testid="gridItem"
+      onClick={onSelect}
+      isCovered={state.visibility === 'covered'}
+    >
       {display}
     </StyledSquare>
   );
