@@ -21,7 +21,7 @@ export const MINE_STATE = "mine";
 export type CellType = {
   visibility: "covered" | "uncovered";
   value: typeof NUMBER_STATE | typeof MINE_STATE;
-  tacos: 1 | 2 | 3;
+  tacos: 0 | 1 | 2 | 3;
 };
 
 const GameBoard = () => {

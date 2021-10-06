@@ -22,7 +22,7 @@ const GridItem = ({ onSelect, state }: GridItemProps) => {
   if (state.visibility === "covered") {
     display = "";
   } else if (state.value === NUMBER_STATE) {
-    display = state.tacos;
+    display = state.tacos !== 0 ? state.tacos : "";
   } else if (state.value === MINE_STATE) {
     display = "B";
   }
