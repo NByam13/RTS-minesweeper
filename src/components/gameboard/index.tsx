@@ -10,11 +10,14 @@ const GameBoardGrid = styled.div`
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 `;
 
-// write tests for next session
-
 // squares
 export const NUMBER_STATE = "number";
 export const MINE_STATE = "mine";
+enum GAME_STATES {
+  LOSE,
+  WIN,
+  NEITHER
+}
 
 export type CellType = {
   visibility: "covered" | "uncovered";
@@ -24,6 +27,7 @@ export type CellType = {
 };
 
 const GameBoard = () => {
+  const [winOrLose, setWinOrLose] = useState(GAME_STATES.NEITHER)
   const [squaresState, setSquaresState] = useState<CellType[]>(
     Array.from({ length: 81 }, () => ({
       visibility: "covered",
@@ -136,6 +140,20 @@ const GameBoard = () => {
     setSquaresState(newState);
   };
 
+  const checkWinOrLoss = (): number => {
+    const clicked = squaresState.map((square) => {
+      if (square.clicked && square.value === "number") return square;
+      else if (square.clicked && square.value === "mine") return GAME_STATES.LOSE;
+    })
+    if (clicked.indexOf(GAME_STATES.LOSE) !== -1) return GAME_STATES.LOSE
+    if (clicked.length === squaresState.length - 10) return GAME_STATES.WIN
+    return GAME_STATES.NEITHER
+  }
+
+  useEffect(() => {
+    setWinOrLose(checkWinOrLoss())
+  }, [squaresState])
+
   useEffect(() => {
     assignMines();
     assignNearbyMines();
@@ -150,6 +168,7 @@ const GameBoard = () => {
           state={squaresState[index]}
         />
       ))}
+      {winOrLose === GAME_STATES.LOSE || winOrLose === GAME_STATES.WIN ? winOrLose : GAME_STATES.NEITHER}
     </GameBoardGrid>
   );
 };
