@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
-import GameBoard from ".";
+import GameBoard, { CellType } from ".";
 import GridItem from '../GridItem'
 
-const MOCK_GRID_ITEM = {
+const MOCK_GRID_ITEM: CellType = {
   visibility: "uncovered",
   value: "number",
   tacos: 0,
@@ -20,21 +20,11 @@ it("renders the grid items", () => {
   expect(gridItems.length).toBe(81);
 });
 
-
-it("does not show zeros", () => {
-  render(<GameBoard />);
-  const gridItems = screen.getAllByRole("button")
-    .filter((button) => {
-      return Array.from(button.attributes)['data-number-of-mines-around'] === "0"
-    });
-  expect(gridItems.length).toBe(81);
-});
-
 describe('GridItem', () => {
-  fit('doesnt display zeros', () => {
+  it('doesnt display zeros', () => {
     render(
       <GridItem
-        onSelect={() => {}}
+        onSelect={() => { }}
         state={MOCK_GRID_ITEM}
       />
     )
