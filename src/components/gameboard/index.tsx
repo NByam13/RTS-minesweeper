@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GridItem from "../GridItem";
 import styled from "styled-components";
 
@@ -13,15 +13,14 @@ const GameBoardGrid = styled.div`
 // write tests for next session
 
 // squares
-export const SOLID_STATE = "solid";
-export const EMPTY_STATE = "empty";
 export const NUMBER_STATE = "number";
 export const MINE_STATE = "mine";
 
 export type CellType = {
   visibility: "covered" | "uncovered";
   value: typeof NUMBER_STATE | typeof MINE_STATE;
-  tacos: 0 | 1 | 2 | 3;
+  nearbyMines: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  clicked: boolean;
 };
 
 const GameBoard = () => {
@@ -29,7 +28,8 @@ const GameBoard = () => {
     Array.from({ length: 81 }, () => ({
       visibility: "covered",
       value: "number",
-      tacos: 2,
+      nearbyMines: 2,
+      clicked: false,
     }))
   );
 
@@ -38,6 +38,7 @@ const GameBoard = () => {
     COPY[index].visibility = "uncovered";
     COPY[index].value =
       COPY[index].value === MINE_STATE ? MINE_STATE : NUMBER_STATE;
+    COPY[index].clicked = true;
     setSquaresState(COPY);
   };
 
@@ -57,7 +58,7 @@ const GameBoard = () => {
     setSquaresState(COPY);
   };
 
-  const calculateTacosForSquare = (index: number) => {
+  const calculateNearbyMinesForSquare = (index: number) => {
     const touchingCells: number[] = [];
 
     if (index < 9) {
@@ -124,11 +125,11 @@ const GameBoard = () => {
     }).length;
   };
 
-  const assignTacos = () => {
+  const assignNearbyMines = () => {
     const newState = squaresState.map((square, index) => {
       return {
         ...square,
-        tacos: calculateTacosForSquare(index),
+        nearbyMines: calculateNearbyMinesForSquare(index),
       } as CellType;
     });
 
@@ -137,7 +138,7 @@ const GameBoard = () => {
 
   useEffect(() => {
     assignMines();
-    assignTacos();
+    assignNearbyMines();
   }, []);
 
   return (

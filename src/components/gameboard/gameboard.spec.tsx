@@ -20,6 +20,7 @@ it("renders the grid items", () => {
   expect(gridItems.length).toBe(81);
 });
 
+
 describe('GridItem', () => {
   it('doesnt display zeros', () => {
     render(
